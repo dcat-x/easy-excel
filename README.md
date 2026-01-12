@@ -1,31 +1,24 @@
 <div align="center">
 
-# EASY EXCEL
+# Easy Excel
 
 <p>
-    <a href="https://github.com/dcat-x/easy-excel/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-7389D8.svg?style=flat" ></a>
     <a href="https://github.com/dcat-x/easy-excel/actions"><img src="https://github.com/dcat-x/easy-excel/workflows/Tests/badge.svg" alt="Tests"></a>
-    <a href="https://github.com/dcat-x/easy-excel/releases" ><img src="https://img.shields.io/github/release/dcat-x/easy-excel.svg?color=4099DE" /></a>
-    <a href="https://packagist.org/packages/dcat-x/easy-excel"><img src="https://img.shields.io/packagist/dt/dcat-x/easy-excel.svg?color=" /></a>
-    <a><img src="https://img.shields.io/badge/php-8.2+-59a9f8.svg?style=flat" /></a>
+    <a href="https://packagist.org/packages/dcat-x/easy-excel"><img src="https://img.shields.io/packagist/v/dcat-x/easy-excel.svg" alt="Latest Version"></a>
+    <a href="https://packagist.org/packages/dcat-x/easy-excel"><img src="https://img.shields.io/packagist/dt/dcat-x/easy-excel.svg" alt="Total Downloads"></a>
+    <a href="https://packagist.org/packages/dcat-x/easy-excel"><img src="https://img.shields.io/packagist/php-v/dcat-x/easy-excel.svg" alt="PHP Version"></a>
+    <a href="https://github.com/dcat-x/easy-excel/blob/main/LICENSE"><img src="https://img.shields.io/packagist/l/dcat-x/easy-excel.svg" alt="License"></a>
 </p>
+
+**基于 [OpenSpout](https://github.com/openspout/openspout) 封装的 Excel 读写工具**
 
 </div>
 
-`Easy Excel`是一个基于 <a href="https://github.com/openspout/openspout" target="_blank">openspout/openspout</a> 封装的Excel读写工具，可以帮助开发者更快速更轻松地读写Excel文件，
-并且无论读取多大的文件只需占用极少的内存。
+---
 
-> 由于`openspout/openspout`只支持读写`xlsx`、`csv`、`ods`等类型文件，所以本项目目前也仅支持读写这三种类型的文件。
+Easy Excel 提供简洁优雅的 API 来读写 Excel 文件，无论文件多大都只占用极少内存。
 
-
-## 环境
-
-- PHP >= 8.2
-- PHP extension php_zip
-- PHP extension php_xmlreader
-- openspout/openspout >= 4.0
-- league/flysystem >= 3.0
-
+支持格式：`xlsx`、`csv`、`ods`
 
 ## 安装
 
@@ -33,144 +26,139 @@
 composer require dcat-x/easy-excel
 ```
 
-### 快速开始
+### 环境要求
 
-#### 导出
+- PHP >= 8.2
+- PHP 扩展：`zip`、`xmlreader`
 
+## 快速开始
 
-下载
+### 导出
+
+#### 下载文件
+
 ```php
 use Dcat\EasyExcel\Excel;
 
-$array = [
-    ['id' => 1, 'name' => 'Brakus', 'email' => 'treutel@eg.com', 'created_at' => '...'],
-    ...
+$data = [
+    ['id' => 1, 'name' => 'Tom', 'email' => 'tom@example.com'],
+    ['id' => 2, 'name' => 'Jerry', 'email' => 'jerry@example.com'],
 ];
 
-$headings = ['id' => 'ID', 'name' => '名称', 'email' => '邮箱'];
+// 设置表头映射
+$headings = ['id' => 'ID', 'name' => '姓名', 'email' => '邮箱'];
 
-// xlsx
-Excel::export($array)->headings($headings)->download('users.xlsx');
+// 导出为 xlsx
+Excel::export($data)->headings($headings)->download('users.xlsx');
 
-// csv
-Excel::export($array)->headings($headings)->download('users.csv');
+// 导出为 csv
+Excel::export($data)->headings($headings)->download('users.csv');
 
-// ods
-Excel::export($array)->headings($headings)->download('users.ods');
+// 导出为 ods
+Excel::export($data)->headings($headings)->download('users.ods');
 ```
 
-保存
+#### 保存到服务器
+
 ```php
 use Dcat\EasyExcel\Excel;
-use League\Flysystem\Local\LocalFilesystemAdapter;
+
+// 保存到本地路径
+Excel::export($data)->store('/tmp/users.xlsx');
+
+// 使用 Flysystem
 use League\Flysystem\Filesystem;
-
-$array = [...];
-
-// 保存到当前服务器
-Excel::export($array)->store('/tmp/users.xlsx');
-
-
-// 使用 filesystem
-$adapter = new LocalFilesystemAdapter(__DIR__);
-
-$filesystem = new Filesystem($adapter);
-
-Excel::export($array)->disk($filesystem)->store('users.xlsx');
-```
-
-获取文件内容
-```php
-use Dcat\EasyExcel\Excel;
-
-$array = [...];
-
-$xlsxContents = Excel::xlsx($array)->raw();
-
-$csvContents = Excel::csv($array)->raw();
-
-$odsContents = Excel::ods($array)->raw();
-```
-
-#### 导入
-
-
-读取所有表格数据
-```php
-use Dcat\EasyExcel\Excel;
 use League\Flysystem\Local\LocalFilesystemAdapter;
-use League\Flysystem\Filesystem;
 
+$filesystem = new Filesystem(new LocalFilesystemAdapter(__DIR__));
+
+Excel::export($data)->disk($filesystem)->store('users.xlsx');
+```
+
+#### 获取文件内容
+
+```php
+use Dcat\EasyExcel\Excel;
+
+$xlsxContent = Excel::xlsx($data)->raw();
+$csvContent = Excel::csv($data)->raw();
+$odsContent = Excel::ods($data)->raw();
+```
+
+### 导入
+
+#### 读取所有数据
+
+```php
+use Dcat\EasyExcel\Excel;
+
+// 指定表头字段
 $headings = ['id', 'name', 'email'];
 
-// 导入xlsx
+// 读取所有工作表
 $allSheets = Excel::import('/tmp/users.xlsx')->headings($headings)->toArray();
+// 返回: ['Sheet1' => [['id' => 1, 'name' => 'Tom', 'email' => 'tom@example.com'], ...]]
 
+// 使用 Flysystem
+use League\Flysystem\Filesystem;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 
-// 使用filesystem
-$adapter = new LocalFilesystemAdapter(__DIR__);
+$filesystem = new Filesystem(new LocalFilesystemAdapter(__DIR__));
 
-$filesystem = new Filesystem($adapter);
-
-$allSheets = Excel::import('users.xlsx')->disk($filesystem)->headings($headings)->toArray();
-
-
-print_r($allSheets); // ['Sheet1' => [['id' => 1, 'name' => 'Brakus', 'email' => 'treutel@eg.com', 'created_at' => '...']]]
+$allSheets = Excel::import('users.xlsx')->disk($filesystem)->toArray();
 ```
 
-遍历表格
+#### 读取指定工作表
+
 ```php
 use Dcat\EasyExcel\Excel;
-use Dcat\EasyExcel\Contracts\Sheet as SheetInterface;
+
+// 获取第一个工作表
+$firstSheet = Excel::import('/tmp/users.xlsx')->first()->toArray();
+
+// 获取最后活动的工作表
+$activeSheet = Excel::import('/tmp/users.xlsx')->active()->toArray();
+
+// 按名称或索引获取
+$sheet = Excel::import('/tmp/users.xlsx')->sheet('Sheet1')->toArray();
+$sheet = Excel::import('/tmp/users.xlsx')->sheet(0)->toArray();
+```
+
+#### 遍历工作表
+
+```php
+use Dcat\EasyExcel\Excel;
+use Dcat\EasyExcel\Contracts\Sheet;
 use Dcat\EasyExcel\Support\SheetCollection;
 
-// 导入xlsx
-Excel::import('/tmp/users.xlsx')->each(function (SheetInterface $sheet) {
-    // 获取表格名称，如果是csv文件，则此方法返回空字符串
-    $sheetName = $sheet->getName();
+Excel::import('/tmp/users.xlsx')->each(function (Sheet $sheet) {
+    $name = $sheet->getName();    // 工作表名称
+    $index = $sheet->getIndex();  // 工作表索引 (从 0 开始)
 
-    // 表格序号，从 0 开始
-    $sheetIndex = $sheet->getIndex();
-
-    // 是否是最后一次保存前打开的表格
-    $isActive = $sheet->isActive();
-
-    // 分块处理表格数据
-    $sheet->chunk(100, function (SheetCollection $collection) {
-        $chunkArray = $collection->toArray();
-
-        print_r($chunkArray); // [['id' => 1, 'name' => 'Brakus', 'email' => 'treutel@eg.com', 'created_at' => '...']]
+    // 分块处理大数据
+    $sheet->chunk(1000, function (SheetCollection $collection) {
+        foreach ($collection as $row) {
+            // 处理每一行
+        }
     });
-
 });
 ```
 
-获取指定表格内容
+#### 分块处理
+
 ```php
 use Dcat\EasyExcel\Excel;
 use Dcat\EasyExcel\Support\SheetCollection;
 
-// 获取第一个表格内容
-$firstSheet = Excel::import('/tmp/users.xlsx')->first()->toArray();
-
-
-// 获取最后一次保存前打开的表格内容
-$activeSheet = Excel::import('/tmp/users.xlsx')->active()->toArray();
-
-
-// 获取指定名称或序号的表格内容
-$sheet = Excel::import('/tmp/users.xlsx')->sheet('Sheet1')->toArray();
-$sheet = Excel::import('/tmp/users.xlsx')->sheet(0)->toArray();
-
-
-// 分块处理表格内容
+// 每次处理 1000 行，适合大文件
 Excel::import('/tmp/users.xlsx')
     ->first()
     ->chunk(1000, function (SheetCollection $collection) {
-        $collection = $collection->keyBy('id');
+        $data = $collection->toArray();
+        // 批量处理数据...
     });
 ```
 
-
 ## License
-[The MIT License (MIT)](LICENSE).
+
+[MIT License](LICENSE)
