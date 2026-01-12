@@ -1,0 +1,56 @@
+{
+  "name": "dcat-x/easy-excel",
+  "description": "使用简单实用的语义化接口快速读写Excel文件",
+  "type": "library",
+  "keywords": [
+    "openspout",
+    "read",
+    "easy excel",
+    "csv",
+    "xlsx",
+    "ods",
+    "office",
+    "excel",
+    "spreadsheet",
+    "stream"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/dcat-x/easy-excel",
+  "authors": [
+    {
+      "name": "jqh",
+      "email": "841324345@qq.com"
+    },
+    {
+      "name": "Cooper",
+      "email": "myxiaoao@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "openspout/openspout": "^4",
+    "league/flysystem": "^3.30"
+  },
+  "require-dev": {
+    "pestphp/pest": "^3",
+    "laravel/pint": "^1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Dcat\\EasyExcel\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    },
+    "classmap": [
+      "tests/TestCase.php"
+    ]
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}
