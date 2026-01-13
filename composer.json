@@ -1,56 +1,73 @@
 {
-  "name": "dcat-x/easy-excel",
-  "description": "使用简单实用的语义化接口快速读写Excel文件",
-  "type": "library",
-  "keywords": [
-    "openspout",
-    "read",
-    "easy excel",
-    "csv",
-    "xlsx",
-    "ods",
-    "office",
-    "excel",
-    "spreadsheet",
-    "stream"
-  ],
-  "license": "MIT",
-  "homepage": "https://github.com/dcat-x/easy-excel",
-  "authors": [
-    {
-      "name": "jqh",
-      "email": "841324345@qq.com"
+    "name": "dcat-x/easy-excel",
+    "description": "A simple and elegant Excel read/write library based on OpenSpout, with minimal memory usage",
+    "type": "library",
+    "keywords": [
+        "excel",
+        "xlsx",
+        "csv",
+        "ods",
+        "spreadsheet",
+        "openspout",
+        "import",
+        "export",
+        "reader",
+        "writer"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/dcat-x/easy-excel",
+    "support": {
+        "issues": "https://github.com/dcat-x/easy-excel/issues",
+        "source": "https://github.com/dcat-x/easy-excel"
     },
-    {
-      "name": "Cooper",
-      "email": "myxiaoao@gmail.com"
-    }
-  ],
-  "require": {
-    "php": "^8.2",
-    "openspout/openspout": "^4",
-    "league/flysystem": "^3.30"
-  },
-  "require-dev": {
-    "pestphp/pest": "^3",
-    "laravel/pint": "^1"
-  },
-  "autoload": {
-    "psr-4": {
-      "Dcat\\EasyExcel\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Tests\\": "tests/"
+    "authors": [
+        {
+            "name": "jqh",
+            "email": "841324345@qq.com"
+        },
+        {
+            "name": "Cooper",
+            "email": "myxiaoao@gmail.com"
+        }
+    ],
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/dcat-x"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "openspout/openspout": "^4.0",
+        "league/flysystem": "^3.0"
     },
-    "classmap": [
-      "tests/TestCase.php"
-    ]
-  },
-  "config": {
-    "allow-plugins": {
-      "pestphp/pest-plugin": true
-    }
-  }
+    "require-dev": {
+        "pestphp/pest": "^3.0",
+        "laravel/pint": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dcat\\EasyExcel\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "pest",
+        "test-coverage": "pest --coverage",
+        "format": "pint",
+        "check-style": "pint --test"
+    },
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist",
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }

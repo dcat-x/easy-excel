@@ -14,5 +14,14 @@ trim_trailing_whitespace = false
 [*.{yml,yaml}]
 indent_size = 2
 
-[docker-compose.yml]
+[*.json]
 indent_size = 4
+
+[*.xml]
+indent_size = 4
+
+[*.{php,phpt}]
+indent_size = 4
+
+[{Makefile,makefile}]
+indent_style = tab
